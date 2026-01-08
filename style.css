@@ -164,21 +164,54 @@ nav {
 }
 
 /* Hero Section */
+/* =========================
+   HERO SECTION (CROSS-DEVICE)
+   ========================= */
+
 .hero {
-    padding: 160px 0 100px;
-    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.7)), url('Banner.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: var(--white);
-    text-align: center;
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
     position: relative;
     overflow: hidden;
+
+    /* padding */
+    padding: 160px 16px 100px;
+
+    /* height fix for mobile */
+    min-height: 80svh;     /* iOS 16+ */
+    min-height: 80vh;      /* fallback */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    color: var(--white);
 }
 
+/* background layer */
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            rgba(15, 23, 42, 0.8),
+            rgba(15, 23, 42, 0.7)
+        ),
+        url("Banner.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* prevent iOS zoom bug */
+    transform: scale(1.03);
+    will-change: transform;
+
+    z-index: 0;
+}
+
+/* content layer */
 .hero-content {
     position: relative;
     z-index: 1;
@@ -186,31 +219,42 @@ nav {
     margin: 0 auto;
 }
 
+/* typography */
 .hero h1 {
-    font-size: 3.5rem;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
     line-height: 1.2;
     margin-bottom: 20px;
     color: var(--white);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,.3);
 }
 
 .hero p {
-    font-size: 1.25rem;
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
     margin-bottom: 40px;
     opacity: 0.9;
 }
 
+/* highlight */
 .highlight {
     color: var(--secondary-color);
     font-weight: 700;
 }
 
+/* buttons */
 .hero-buttons {
     display: flex;
     gap: 20px;
     justify-content: center;
     flex-wrap: wrap;
 }
+
+/* desktop enhancement */
+@media (min-width: 1024px) {
+    .hero::before {
+        transform: scale(1.08); /* subtle cinematic look */
+    }
+}
+
 
 /* Features/Highlights */
 .features {
@@ -601,3 +645,4 @@ footer {
     box-shadow: 0 4px 10px rgba(6, 199, 85, 0.3);
 
 }
+
