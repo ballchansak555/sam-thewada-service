@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณภาษีรถประจำปี - ตรอ.สามเทวดาเซอร์วิส</title>
+    <link rel="icon" href="Logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            prefix: 'tw-',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2b4282',
+                        accent: '#fbbf24',
+                        success: '#10b981',
+                    },
+                    boxShadow: {
+                        'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            },
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
+    <style>
+        .calculator-section {
+            padding-top: 120px;
+            padding-bottom: 70px;
+            min-height: 100vh;
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tw-animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="Logo.png" alt="ตรอ.สามเทวดาเซอร์วิส"
+                        style="height: 60px; width: auto; margin-right: 15px;">
+                    <h3>ตรอ.สามเทวดาเซอร์วิส <span class="highlight">กบินทร์บุรี</span></h3>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#home">หน้าแรก</a></li>
+                    <li><a href="index.html#services">บริการของเรา</a></li>
+                    <li><a href="index.html#contact">ติดต่อเรา</a></li>
+                    <li><a href="https://lin.ee/31rnvCD" class="btn btn-primary"
+                            style="padding: 8px 20px; font-size: 0.9rem;">Add Line</a></li>
+                </ul>
+                <div class="mobile-menu-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="calculator-section tw-bg-slate-50">
+        <div class="tw-max-w-lg tw-w-full tw-relative tw-px-4">
+
+            <div
+                class="tw-relative tw-z-10 tw-bg-white tw-border tw-border-slate-100 tw-rounded-[2.5rem] tw-shadow-premium tw-overflow-hidden tw-pb-8">
+
+                <div class="tw-bg-primary tw-p-8 tw-text-center">
+                    <h1 class="tw-text-2xl tw-text-white tw-font-bold tw-m-0">คำนวณภาษีรถประจำปี</h1>
+                    <p class="tw-text-blue-100 tw-text-sm tw-mt-1.5 tw-opacity-80">ประเมินยอดชำระแบบเรียลไทม์</p>
+                </div>
+
+                <div class="tw-p-7 tw-space-y-6">
+
+                    <!-- Vehicle Type -->
+                    <div class="tw-space-y-2">
+                        <label
+                            class="tw-block tw-text-sm tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wide">ประเภทรถยนต์</label>
+                        <div class="tw-relative">
+                            <select id="vehicleType" onchange="updateLabel(); calculate();"
+                                class="tw-w-full tw-bg-slate-50 tw-border tw-border-slate-100 tw-rounded-2xl tw-py-4 tw-px-5 tw-text-base tw-font-bold tw-text-slate-700 focus:tw-bg-white focus:tw-border-primary tw-outline-none tw-appearance-none tw-cursor-pointer tw-transition-all">
+                                <option value="car">รถยนต์นั่งส่วนบุคคล (รถเก๋ง)</option>
+                                <option value="pickup">รถบรรทุกส่วนบุคคล (กระบะ)</option>
+                                <option value="van">รถนั่งส่วนบุคคลเกิน 7 คน (รถตู้)</option>
+                                <option value="bike">รถจักรยานยนต์</option>
+                                <option value="ev">รถยนต์ไฟฟ้า (EV)</option>
+                            </select>
+                            <i
+                                class="fa-solid fa-chevron-down tw-absolute tw-right-5 tw-top-1/2 -tw-translate-y-1/2 tw-text-slate-400 tw-pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <!-- Input CC/Weight -->
+                    <div class="tw-space-y-2">
+                        <label id="inputLabel"
+                            class="tw-block tw-text-sm tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wide">ขนาดเครื่องยนต์
+                            (CC)</label>
+                        <input type="number" id="inputVal" oninput="calculate()"
+                            class="tw-w-full tw-bg-slate-50 tw-border tw-border-slate-100 tw-rounded-2xl tw-py-4 tw-px-5 tw-text-lg tw-font-bold tw-text-primary placeholder:tw-text-slate-300 focus:tw-bg-white focus:tw-border-primary tw-outline-none tw-transition-all"
+                            placeholder="ระบุตัวเลข">
+                    </div>
+
+                    <!-- Registration Date -->
+                    <div class="tw-space-y-2">
+                        <label
+                            class="tw-block tw-text-sm tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wide">วันจดทะเบียน
+                            (พ.ศ.)</label>
+                        <div class="tw-flex tw-gap-2.5">
+                            <select id="regDay" onchange="calculate()"
+                                class="tw-w-1/4 tw-border tw-border-slate-100 tw-bg-slate-50 tw-rounded-xl tw-py-3.5 tw-text-center tw-text-base tw-font-bold tw-text-slate-700 tw-outline-none focus:tw-border-primary"></select>
+                            <select id="regMonth" onchange="calculate()"
+                                class="tw-w-1/3 tw-border tw-border-slate-100 tw-bg-slate-50 tw-rounded-xl tw-py-3.5 tw-text-center tw-text-base tw-font-bold tw-text-slate-700 tw-outline-none focus:tw-border-primary"></select>
+                            <input type="number" id="regYear" oninput="calculate()"
+                                class="tw-w-1/3 tw-border tw-border-slate-100 tw-bg-slate-50 tw-rounded-xl tw-py-3.5 tw-text-center tw-text-base tw-font-bold tw-text-slate-700 tw-outline-none focus:tw-border-primary"
+                                placeholder="พ.ศ.">
+                        </div>
+                    </div>
+
+                    <!-- Label Year -->
+                    <div class="tw-space-y-2">
+                        <label
+                            class="tw-block tw-text-sm tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wide">ป้ายภาษีปัจจุบัญ
+                            (ปี พ.ศ. ที่หมดอายุ)</label>
+                        <select id="labelYear" onchange="calculate()"
+                            class="tw-w-full tw-bg-slate-50 tw-border tw-border-slate-100 tw-rounded-2xl tw-py-4 tw-px-5 tw-text-base tw-font-bold tw-text-slate-700 tw-outline-none focus:tw-border-primary tw-cursor-pointer"></select>
+                    </div>
+
+                    <!-- Switches -->
+                    <div class="tw-grid tw-grid-cols-2 tw-gap-3">
+                        <label
+                            class="tw-group tw-flex tw-items-center tw-justify-between tw-bg-slate-50 tw-p-4 tw-rounded-2xl tw-cursor-pointer hover:tw-bg-slate-100 tw-transition-all tw-border tw-border-transparent has-[:checked]:tw-border-success/30">
+                            <span class="tw-text-sm tw-font-bold tw-text-slate-600">NGV</span>
+                            <div class="tw-relative tw-w-10 tw-h-6">
+                                <input type="checkbox" id="ngv" onchange="calculate()" class="tw-peer tw-sr-only">
+                                <div
+                                    class="tw-w-full tw-h-full tw-bg-slate-200 tw-rounded-full tw-transition-all peer-checked:tw-bg-success">
+                                </div>
+                                <div
+                                    class="tw-absolute tw-left-1 tw-top-1 tw-bg-white tw-w-4 tw-h-4 tw-rounded-full tw-transition-all tw-shadow-sm peer-checked:tw-translate-x-4">
+                                </div>
+                            </div>
+                        </label>
+
+                        <label
+                            class="tw-group tw-flex tw-items-center tw-justify-between tw-bg-slate-50 tw-p-4 tw-rounded-2xl tw-cursor-pointer hover:tw-bg-slate-100 tw-transition-all tw-border tw-border-transparent has-[:checked]:tw-border-primary/30">
+                            <span class="tw-text-sm tw-font-bold tw-text-slate-600">นิติบุคคล</span>
+                            <div class="tw-relative tw-w-10 tw-h-6">
+                                <input type="checkbox" id="juristic" onchange="calculate()" class="tw-peer tw-sr-only">
+                                <div
+                                    class="tw-w-full tw-h-full tw-bg-slate-200 tw-rounded-full tw-transition-all peer-checked:tw-bg-primary">
+                                </div>
+                                <div
+                                    class="tw-absolute tw-left-1 tw-top-1 tw-bg-white tw-w-4 tw-h-4 tw-rounded-full tw-transition-all tw-shadow-sm peer-checked:tw-translate-x-4">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Services -->
+                    <div class="tw-space-y-2.5">
+                        <label
+                            class="tw-group tw-flex tw-items-center tw-justify-between tw-bg-white tw-border tw-border-slate-100 tw-p-5 tw-rounded-2xl tw-cursor-pointer hover:tw-border-primary/50 tw-transition-all has-[:checked]:tw-bg-primary/5 has-[:checked]:tw-border-primary">
+                            <span class="tw-flex tw-items-center tw-gap-4">
+                                <div
+                                    class="tw-w-10 tw-h-10 tw-bg-blue-50 tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-text-primary group-has-[:checked]:tw-bg-primary group-has-[:checked]:tw-text-white tw-transition-colors">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                </div>
+                                <span class="tw-text-sm tw-font-bold tw-text-slate-700">ตรวจสภาพรถ (ตรอ.)</span>
+                            </span>
+                            <div class="tw-relative tw-w-11 tw-h-6">
+                                <input type="checkbox" id="serviceInspect" onchange="calculate()"
+                                    class="tw-peer tw-sr-only">
+                                <div
+                                    class="tw-w-full tw-h-full tw-bg-slate-200 tw-rounded-full tw-transition-all peer-checked:tw-bg-primary">
+                                </div>
+                                <div
+                                    class="tw-absolute tw-left-1 tw-top-1 tw-bg-white tw-w-4 tw-h-4 tw-rounded-full tw-transition-all tw-shadow-sm peer-checked:tw-translate-x-5">
+                                </div>
+                            </div>
+                        </label>
+
+                        <label
+                            class="tw-group tw-flex tw-items-center tw-justify-between tw-bg-white tw-border tw-border-slate-100 tw-p-5 tw-rounded-2xl tw-cursor-pointer hover:tw-border-primary/50 tw-transition-all has-[:checked]:tw-bg-primary/5 has-[:checked]:tw-border-primary">
+                            <span class="tw-flex tw-items-center tw-gap-4">
+                                <div
+                                    class="tw-w-10 tw-h-10 tw-bg-red-50 tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-text-red-500 group-has-[:checked]:tw-bg-primary group-has-[:checked]:tw-text-white tw-transition-colors">
+                                    <i class="fa-solid fa-shield-heart"></i>
+                                </div>
+                                <span class="tw-text-sm tw-font-bold tw-text-slate-700">ซื้อ พรบ. </span>
+                            </span>
+                            <div class="tw-relative tw-w-11 tw-h-6">
+                                <input type="checkbox" id="serviceAct" onchange="calculate()"
+                                    class="tw-peer tw-sr-only">
+                                <div
+                                    class="tw-w-full tw-h-full tw-bg-slate-200 tw-rounded-full tw-transition-all peer-checked:tw-bg-primary">
+                                </div>
+                                <div
+                                    class="tw-absolute tw-left-1 tw-top-1 tw-bg-white tw-w-4 tw-h-4 tw-rounded-full tw-transition-all tw-shadow-sm peer-checked:tw-translate-x-5">
+                                </div>
+                            </div>
+                        </label>
+
+                        <label
+                            class="tw-group tw-flex tw-items-center tw-justify-between tw-bg-white tw-border tw-border-slate-100 tw-p-5 tw-rounded-2xl tw-cursor-pointer hover:tw-border-primary/50 tw-transition-all has-[:checked]:tw-bg-primary/5 has-[:checked]:tw-border-primary">
+                            <span class="tw-flex tw-items-center tw-gap-4">
+                                <div
+                                    class="tw-w-10 tw-h-10 tw-bg-orange-50 tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-text-orange-600 group-has-[:checked]:tw-bg-primary group-has-[:checked]:tw-text-white tw-transition-colors">
+                                    <i class="fa-solid fa-truck-fast"></i>
+                                </div>
+                                <span class="tw-text-sm tw-font-bold tw-text-slate-700">ฝากต่อภาษี</span>
+                            </span>
+                            <div class="tw-relative tw-w-11 tw-h-6">
+                                <input type="checkbox" id="serviceFee" onchange="calculate()"
+                                    class="tw-peer tw-sr-only">
+                                <div
+                                    class="tw-w-full tw-h-full tw-bg-slate-200 tw-rounded-full tw-transition-all peer-checked:tw-bg-primary">
+                                </div>
+                                <div
+                                    class="tw-absolute tw-left-1 tw-top-1 tw-bg-white tw-w-4 tw-h-4 tw-rounded-full tw-transition-all tw-shadow-sm peer-checked:tw-translate-x-5">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button onclick="calculate()"
+                        class="tw-w-full tw-bg-primary tw-text-white tw-font-bold tw-text-xl tw-py-5 tw-rounded-2xl tw-shadow-xl hover:tw-bg-slate-900 tw-transition-all tw-mt-4">
+                        <i class="fa-solid fa-calculator tw-mr-2"></i> คำนวณยอดชำระเบื้องต้น
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div id="resultCard"
+                class="tw-hidden tw-relative tw-bg-white tw-rounded-[2.5rem] tw-shadow-2xl tw-overflow-hidden tw-mt-10 tw-border tw-border-slate-100 tw-animate-fade-in">
+
+                <div class="tw-bg-slate-900 tw-p-8 tw-text-center">
+                    <h2 class="tw-text-white tw-text-xl tw-font-bold">สรุปยอดที่ต้องชำระ</h2>
+                </div>
+
+                <div class="tw-p-9 tw-space-y-8">
+                    <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-pb-6 tw-border-b tw-border-slate-100">
+                        <div>
+                            <p class="tw-text-[10px] tw-text-slate-400 tw-uppercase tw-font-bold tw-tracking-widest">
+                                รอบภาษีปี</p>
+                            <p class="tw-text-lg tw-font-bold tw-text-slate-800" id="resTargetYear">-</p>
+                        </div>
+                        <div class="tw-text-right">
+                            <p class="tw-text-[10px] tw-text-slate-400 tw-uppercase tw-font-bold tw-tracking-widest">
+                                ประเภทรถ</p>
+                            <p class="tw-text-sm tw-font-bold tw-text-primary" id="resVTypeDisplay">-</p>
+                        </div>
+                    </div>
+
+                    <div class="tw-space-y-4">
+                        <div class="tw-flex tw-justify-between tw-items-center">
+                            <span class="tw-text-slate-600 tw-text-sm">ค่าภาษีประจำปี (<span
+                                    id="resTaxYear"></span>)</span>
+                            <span class="tw-font-bold tw-text-slate-800"><span id="resTaxValue">0.00</span> ฿</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center tw-text-red-500" id="rowFine">
+                            <span class="tw-text-sm tw-flex tw-items-center"><i
+                                    class="fa-solid fa-clock-rotate-left tw-mr-2"></i>เงินเพิ่ม/ค่าปรับ</span>
+                            <span class="tw-font-bold"><span id="resFineValue">0.00</span> ฿</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center tw-text-slate-600" id="rowInspect">
+                            <span class="tw-text-sm tw-flex tw-items-center"><i
+                                    class="fa-solid fa-circle-check tw-text-green-500 tw-mr-2"></i>ค่าตรวจสภาพ
+                                (ตรอ.)</span>
+                            <span class="tw-font-bold tw-text-slate-800"><span id="valInspect">0</span> ฿</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center tw-text-slate-600" id="rowAct">
+                            <span class="tw-text-sm tw-flex tw-items-center"><i
+                                    class="fa-solid fa-circle-check tw-text-green-500 tw-mr-2"></i>ค่า พรบ. </span>
+                            <span class="tw-font-bold tw-text-slate-800"><span id="valAct">0</span> ฿</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center tw-text-slate-600" id="rowService">
+                            <span class="tw-text-sm tw-flex tw-items-center"><i
+                                    class="fa-solid fa-circle-check tw-text-green-500 tw-mr-2"></i>ค่าบริการรับฝาก</span>
+                            <span class="tw-font-bold tw-text-slate-800"><span id="valService">0</span> ฿</span>
+                        </div>
+                    </div>
+
+                    <div class="tw-bg-primary tw-rounded-3xl tw-p-8 tw-text-white tw-text-center">
+                        <p class="tw-text-[10px] tw-text-white/60 tw-uppercase tw-font-bold tw-tracking-widest tw-mb-2">
+                            ยอดรวมสุทธิ</p>
+                        <p class="tw-text-4xl tw-font-bold">฿ <span id="resTotal">0.00</span></p>
+                    </div>
+
+                    <div id="suspendedWarning"
+                        class="tw-hidden tw-bg-red-50 tw-border tw-border-red-100 tw-rounded-2xl tw-p-5 tw-flex tw-items-start tw-gap-4">
+                        <i class="fa-solid fa-circle-exclamation tw-text-red-500 tw-mt-1"></i>
+                        <p class="tw-text-red-700 tw-text-sm tw-font-bold">ทะเบียนระงับแล้ว (ค้างเกิน 3 ปี)</p>
+                    </div>
+
+                    <div id="expiryWarning"
+                        class="tw-hidden tw-bg-amber-50 tw-border tw-border-amber-100 tw-rounded-2xl tw-p-4 tw-text-center">
+                        <p class="tw-text-amber-700 tw-text-xs tw-font-bold"></p>
+                    </div>
+
+                    <button onclick="saveAsImage()"
+                        class="tw-w-full tw-bg-slate-50 tw-text-slate-400 tw-py-4 tw-rounded-2xl tw-text-xs tw-font-bold hover:tw-bg-slate-100 tw-transition-all">
+                        <i class="fa-solid fa-camera tw-mr-2"></i> บันทึกข้อมูล
+                    </button>
+                </div>
+            </div>
+
+            <div class="tw-h-20"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col" style="flex: 1; min-width: 250px;">
+                    <h3>ตรอ.สามเทวดาเซอร์วิส</h3>
+                    <p style="opacity: 0.8;">บริการด้วยใจ ห่วงใยทุกการขับขี่ ครบวงจรเรื่องทะเบียนและประกันภัย</p>
+                </div>
+                <div class="footer-col">
+                    <h3>เมนูลัด</h3>
+                    <ul style="list-style: none; opacity: 0.8;">
+                        <li style="margin-bottom: 10px;"><a href="index.html#home">หน้าแรก</a></li>
+                        <li style="margin-bottom: 10px;"><a href="index.html#services">บริการ</a></li>
+                        <li><a href="index.html#contact">ติดต่อ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ตรอ.สามเทวดาเซอร์วิส กบินทร์บุรี. All Request Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="sticky-footer">
+        <a href="tel:037601374" class="sticky-btn call">
+            <i class="fa-solid fa-phone"></i> โทรเลย
+        </a>
+        <a href="https://lin.ee/31rnvCD" target="_blank" class="sticky-btn line">
+            <i class="fa-brands fa-line"></i> แอดไลน์
+        </a>
+    </div>
+
+    <script>
+        const PRICES = {
+            act: { car: 645.21, pickup: 967.28, van: 1182.35, bike: 323.14, ev: 645.21 },
+            inspect: 200,
+            service: 170
+        };
+
+        const currentYearAD = new Date().getFullYear();
+        const currentYearBE = currentYearAD + 543;
+
+        window.onload = function () {
+            populate('regDay', 1, 31, true);
+            populateMonths('regMonth');
+            populate('labelYear', currentYearBE - 3, currentYearBE + 1);
+
+            const today = new Date();
+            setV('regDay', today.getDate());
+            setV('regMonth', today.getMonth() + 1);
+            setV('regYear', currentYearBE);
+            setV('labelYear', currentYearBE + 1);
+            setV('vehicleType', 'car');
+        };
+
+        function setV(id, v) { const el = document.getElementById(id); if (el) el.value = v; }
+        function populate(id, f, t, pad = false) {
+            const s = document.getElementById(id); if (!s) return;
+            s.innerHTML = '';
+            for (let i = f; i <= t; i++) s.add(new Option(pad ? i.toString().padStart(2, '0') : i, i));
+        }
+        function populateMonths(id) {
+            const s = document.getElementById(id); if (!s) return;
+            s.innerHTML = '';
+            for (let i = 1; i <= 12; i++) s.add(new Option(i.toString().padStart(2, '0'), i));
+        }
+
+        function updateLabel() {
+            const type = document.getElementById('vehicleType').value;
+            const label = document.getElementById('inputLabel');
+            if (type === 'bike') label.textContent = 'ขนาดเครื่องยนต์ (CC)';
+            else if (['pickup', 'van', 'ev'].includes(type)) label.textContent = 'น้ำหนักรถ (กก.)';
+            else label.textContent = 'ขนาดเครื่องยนต์ (CC)';
+        }
+
+        function calculate() {
+            try {
+                const type = document.getElementById('vehicleType').value;
+                const inputVal = parseFloat(document.getElementById('inputVal').value) || 0;
+
+                // Registration Date
+                const rD = parseInt(document.getElementById('regDay').value) || 1;
+                const rM = parseInt(document.getElementById('regMonth').value) || 1;
+                let rY_BE = parseInt(document.getElementById('regYear').value) || currentYearBE;
+                const rY_AD = rY_BE > 2400 ? rY_BE - 543 : rY_BE;
+
+                // Label Expiry
+                const lY_BE = parseInt(document.getElementById('labelYear').value) || currentYearBE;
+                const lY_AD = lY_BE - 543;
+
+                // Today's Date for calculation
+                const today = new Date();
+                const nowD = today.getDate();
+                const nowM = today.getMonth() + 1;
+                const nowY_AD = today.getFullYear();
+
+                let startY = lY_AD + 1;
+                let endY = nowY_AD;
+                if (endY < startY) endY = startY;
+
+                let taxBase = 0, fineBase = 0, yearsCount = 0;
+                const isNGV = document.getElementById('ngv').checked;
+                const isJuristic = document.getElementById('juristic').checked;
+
+                for (let y = startY; y <= endY; y++) {
+                    yearsCount++;
+                    let yearlyTax = 0;
+                    if (type === 'car') yearlyTax = getCarTax(inputVal, rY_AD, y);
+                    else if (type === 'pickup') yearlyTax = getWeightTax(inputVal, 'pickup');
+                    else if (type === 'van') yearlyTax = getWeightTax(inputVal, 'van');
+                    else if (type === 'bike') yearlyTax = 100;
+                    else if (type === 'ev') yearlyTax = getWeightTax(inputVal, 'van') * 0.2;
+
+                    if (isNGV && type !== 'ev' && type !== 'bike') yearlyTax *= 0.75;
+                    if (isJuristic) yearlyTax *= 2;
+                    taxBase += yearlyTax;
+
+                    // Calculate Fine (1% per month)
+                    // Expiry is on (y-1) at the same Day/Month of registration
+                    let expireDate = new Date(y - 1, rM - 1, rD);
+                    if (today > expireDate) {
+                        let mDiff = (today.getFullYear() - expireDate.getFullYear()) * 12 + (today.getMonth() - expireDate.getMonth());
+                        if (today.getDate() > expireDate.getDate()) mDiff++;
+                        if (mDiff > 0) fineBase += (yearlyTax * 0.01 * mDiff);
+                    }
+                }
+
+                const resultCard = document.getElementById('resultCard');
+                if (resultCard) resultCard.classList.remove('tw-hidden');
+
+                const showRange = yearsCount > 1 ? `${startY + 543}-${endY + 543}` : (endY + 543);
+                document.getElementById('resTargetYear').textContent = yearsCount > 1 ? `${showRange} (${yearsCount} ปี)` : showRange;
+                document.getElementById('resTaxYear').textContent = showRange;
+                document.getElementById('resTaxValue').textContent = fmt(taxBase);
+                document.getElementById('resFineValue').textContent = fmt(fineBase);
+
+                const hasInspect = document.getElementById('serviceInspect').checked;
+                const hasAct = document.getElementById('serviceAct').checked;
+                const hasFee = document.getElementById('serviceFee').checked;
+
+                const costInsp = hasInspect ? 200 : 0;
+                const costAct = hasAct ? (PRICES.act[type] || 0) : 0;
+                const costFee = hasFee ? 170 : 0;
+
+                setD('rowInspect', hasInspect);
+                setD('rowAct', hasAct);
+                setD('rowService', hasFee);
+
+                document.getElementById('valInspect').textContent = costInsp;
+                document.getElementById('valAct').textContent = costAct.toFixed(0);
+                document.getElementById('valService').textContent = costFee;
+
+                const total = taxBase + fineBase + costInsp + costAct + costFee;
+                document.getElementById('resTotal').textContent = fmt(total);
+
+                const labelExpire = new Date(lY_AD, rM - 1, rD);
+                let overM = (today.getFullYear() - labelExpire.getFullYear()) * 12 + (today.getMonth() - labelExpire.getMonth());
+                if (today.getDate() > labelExpire.getDate()) overM++;
+
+                setD('suspendedWarning', overM > 36);
+
+                const eWarn = document.getElementById('expiryWarning');
+                if (overM > 0 && overM <= 36) {
+                    setD('expiryWarning', true);
+                    eWarn.querySelector('p').textContent = `ภาษีค้างชำระ ${overM} เดือน (ระงับเมื่อครบ 3 ปี)`;
+                } else {
+                    setD('expiryWarning', false);
+                }
+
+                const typeMap = { car: 'รถนั่งส่วนบุคคล (< 7 คน)', pickup: 'รถบรรทุกส่วนบุคคล', van: 'รถนั่งส่วนบุคคล (> 7 คน)', bike: 'รถจักรยานยนต์', ev: 'รถยนต์ไฟฟ้า' };
+                document.getElementById('resVTypeDisplay').textContent = typeMap[type];
+            } catch (e) { console.error("Calculation Error:", e); }
+        }
+
+        function getCarTax(cc, regY, targetY) {
+            let base = (cc <= 600) ? cc * 0.5 : (cc <= 1800) ? 300 + (cc - 600) * 1.5 : 2100 + (cc - 1800) * 4;
+            let age = targetY - regY + 1;
+            let disc = (age >= 10) ? 0.5 : (age >= 6) ? (age - 5) * 0.1 : 0;
+            return base * (1 - disc);
+        }
+
+        function getWeightTax(w, type) {
+            if (type === 'pickup') {
+                if (w <= 500) return 300; if (w <= 750) return 450; if (w <= 1000) return 600;
+                if (w <= 1250) return 750; if (w <= 1500) return 900; if (w <= 1750) return 1050;
+                if (w <= 2000) return 1350; if (w <= 2500) return 1650; return 1950;
+            } else { // Van
+                if (w <= 500) return 150; if (w <= 750) return 300; if (w <= 1000) return 450;
+                if (w <= 1250) return 800; if (w <= 1500) return 1000; if (w <= 1750) return 1300; return 1600;
+            }
+        }
+
+        function fmt(n) { return n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+        function setD(id, s) {
+            const el = document.getElementById(id);
+            if (el) {
+                if (s) { el.classList.remove('tw-hidden'); el.style.display = 'flex'; }
+                else { el.classList.add('tw-hidden'); el.style.display = 'none'; }
+            }
+        }
+
+        function saveAsImage() {
+            html2canvas(document.getElementById('resultCard'), { scale: 2 }).then(canvas => {
+                const a = document.createElement('a'); a.download = `tax-${Date.now()}.png`; a.href = canvas.toDataURL(); a.click();
+            });
+        }
+    </script>
+</body>
+
+</html>
