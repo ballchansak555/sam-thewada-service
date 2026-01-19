@@ -645,4 +645,39 @@ footer {
     box-shadow: 0 4px 10px rgba(6, 199, 85, 0.3);
 
 }
+.info-highlight {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8); /* Gradient สีฟ้าเข้ม */
+    color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    margin-top: 40px;
+    font-size: 1.1rem;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.info-highlight a {
+    color: #FACC15; /* สีเหลืองสด */
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.info-highlight i {
+    margin-right: 8px;
+    color: #FACC15; /* สีเหลืองสด */
+    font-size: 1.5rem;
+}
+
+/* Animation for smooth appearance */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
